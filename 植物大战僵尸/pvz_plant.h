@@ -7,7 +7,8 @@ class pvz_shell:public pvz_character
 	friend class pvz_map;
     public:
 
-	//声明 存在（伤害值）重写；
+	//声明 存在（伤害值）重写；,为什么要写存在函数，因为这个函数参数列表是对方的攻击力，，攻击也可以当成一种效果，
+	//无非就是只需要写一次就可以了
 	char exist(unsigned short power = 0)override;
 
 	//声明 观察（目标）重写；
@@ -22,6 +23,10 @@ class pvz_shell:public pvz_character
 
 	//攻击力
 	unsigned short power;
+	//	初始横纵坐标,半径，速度
+	unsigned short x,y,r,v;
+	//标志
+	char sign;
 
 	//声明 构造（x方向，y方向，初始横坐标，初始纵坐标，攻击力，
 	// 杀伤半径，移动速度，标志，初始状态列表）；
@@ -38,8 +43,15 @@ class pvz_shell:public pvz_character
 	virtual shared_ptr<pvz_shell>clone() = 0;
 
 	//声明 纯虚 可以攻击（时间，目标，横坐标，纵坐标）=空；
+	//可以攻击是指一个目标是否在你的攻击范围内，如果交给我来判断，我要获取你的攻击范围，
+	//但是你的攻击范围不是三言两语能讲清的，比如胆小菇吧，僵尸离它太近它就不敢攻击了
 	virtual char can_attack(unsigned long s, char goal,unsigned short x, unsigned short y) = 0;
 };
+
+
+
+
+
 //声明 植物大战僵尸的植物
 class pvz_plant :public pvz_character
 {
@@ -64,9 +76,16 @@ public:
 	virtual shared_ptr<pvz_plant>clone() = 0;
 
 	//声明 观察（目标）重写；
+	//外界大部分情况只需要读取不需要修改，那就给一个接口look函数让它们获取自己需要的属性即可
 	unsigned short look(char goal)override;
     
-protected:
+protected://植物的自身属性都设置成保护，防止外界访问，不过本身也是抽象类，就算知道属性也无法1依次创建对象
+//抽象类的使用场景
+//定义接口：抽象类用于定义一组接口，派生类必须实现这些接口。
+
+//代码复用：抽象类可以提供部分实现，派生类可以复用这些实现。
+
+//多态：通过基类指针或引用调用派生类的实现。
 
 //血量
 unsigned short hp;
